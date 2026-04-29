@@ -1,6 +1,6 @@
 // التطبيق الرئيسي
 const { useState, useEffect, useMemo } = React;
-const { StartScreen, TeamsScreen, CategoryScreen, TEAM_PRESETS } = window.SaroonaScreens1;
+const { StartScreen, TeamsScreen, CategoryScreen, SetupScreen, TEAM_PRESETS } = window.SaroonaScreens1;
 const { QuestionScreen, ResultScreen, ScoreboardScreen, EndScreen } = window.SaroonaScreens2;
 const { LoginScreen, OtpScreen } = window.SaroonaAuth;
 const { LoadingScreen, ErrorScreen } = window.SaroonaCommon;
@@ -55,11 +55,15 @@ function App() {
     { ...TEAM_PRESETS[1] },
   ]);
   const [scores, setScores] = useState([0, 0]);
+  const [correctCount, setCorrectCount] = useState([0, 0]);
+  const [wrongCount, setWrongCount] = useState([0, 0]);
   const [activeTeam, setActiveTeam] = useState(0);
   const [questionNum, setQuestionNum] = useState(1);
   const [currentCat, setCurrentCat] = useState(null);
   const [currentQ, setCurrentQ] = useState(null);
   const [usedQs, setUsedQs] = useState(new Set());
+  const [selectedCat, setSelectedCat] = useState(null);
+  const [selectedDiff, setSelectedDiff] = useState('any');
   const [lastResult, setLastResult] = useState({ correct: false, points: 0, multiplier: 1 });
   const [lifelines, setLifelines] = useState([
     { fifty: 2, call: 1, double: 2 },
@@ -85,16 +89,37 @@ function App() {
 
   const startPlay = () => {
     setScores([0, 0]);
+    setCorrectCount([0, 0]);
+    setWrongCount([0, 0]);
     setActiveTeam(0);
     setQuestionNum(1);
     setUsedQs(new Set());
+    setSelectedCat(null);
+    setSelectedDiff('any');
     setLifelines([{ fifty: 2, call: 1, double: 2 }, { fifty: 2, call: 1, double: 2 }]);
-    transition('category');
+    transition('setup');
   };
 
+  // يستخدم بعد setup — يجلب سؤال تلقائياً من الفئة والصعوبة المختارة
+  const autoPickQuestion = () => {
+    if (!selectedCat) return;
+    const cat = window.QUESTION_BANK[selectedCat];
+    const filtered = cat.questions
+      .map((q, i) => ({ q, i }))
+      .filter(({ q }) => selectedDiff === 'any' || q.difficulty === selectedDiff);
+    const available = filtered.filter(({ i }) => !usedQs.has(`${selectedCat}-${i}`));
+    const pool = available.length ? available : filtered;
+    if (!pool.length) return;
+    const pick = pool[Math.floor(Math.random() * pool.length)];
+    setUsedQs(s => new Set([...s, `${selectedCat}-${pick.i}`]));
+    setCurrentCat({ ...cat, key: selectedCat });
+    setCurrentQ(pick.q);
+    transition('question');
+  };
+
+  // يستخدم في شاشة category القديمة — لكن الـ stage هذه ما عاد تستخدم بشكل افتراضي
   const pickCategory = (catKey) => {
     const cat = window.QUESTION_BANK[catKey];
-    // pick unused question
     const available = cat.questions.filter((_, i) => !usedQs.has(`${catKey}-${i}`));
     const pool = available.length ? available : cat.questions;
     const idx = Math.floor(Math.random() * pool.length);
@@ -113,6 +138,13 @@ function App() {
       const next = [...scores];
       next[activeTeam] += pts;
       setScores(next);
+      const nextCorrect = [...correctCount];
+      nextCorrect[activeTeam] += 1;
+      setCorrectCount(nextCorrect);
+    } else {
+      const nextWrong = [...wrongCount];
+      nextWrong[activeTeam] += 1;
+      setWrongCount(nextWrong);
     }
     transition('result');
   };
@@ -139,12 +171,15 @@ function App() {
   const nextTurn = () => {
     setQuestionNum(n => n + 1);
     setActiveTeam(t => 1 - t);
-    transition('category');
+    // ينتقل مباشرة لسؤال جديد من نفس الفئة + الصعوبة (لا شاشة فئة بين الأدوار)
+    setTimeout(() => autoPickQuestion(), 250);
   };
 
   const restart = () => {
     // إعادة تعيين النقاط والحالة، ثم الرجوع لاختيار الفرق
     setScores([0, 0]);
+    setCorrectCount([0, 0]);
+    setWrongCount([0, 0]);
     setQuestionNum(1);
     setActiveTeam(0);
     setUsedQs(new Set());
@@ -158,6 +193,17 @@ function App() {
       case 'otp': return <OtpScreen phone={user.phone} onVerify={() => transition('start')} onBack={() => transition('login')} />;
       case 'start': return <StartScreen onStart={startGame} />;
       case 'teams': return <TeamsScreen teams={teams} setTeams={setTeams} onNext={startPlay} onBack={() => transition('start')} />;
+      case 'setup':
+        if (apiError) return <ErrorScreen onRetry={retryApi} />;
+        if (!apiReady) return <LoadingScreen />;
+        return <SetupScreen
+          selectedCat={selectedCat}
+          selectedDiff={selectedDiff}
+          onSelectCat={setSelectedCat}
+          onSelectDiff={setSelectedDiff}
+          onStart={() => { setTimeout(() => autoPickQuestion(), 50); }}
+          onBack={() => transition('teams')}
+        />;
       case 'category':
         if (apiError) return <ErrorScreen onRetry={retryApi} />;
         if (!apiReady) return <LoadingScreen />;
@@ -176,8 +222,8 @@ function App() {
         onLifeline={onLifeline}
       />;
       case 'result': return <ResultScreen correct={lastResult.correct} points={lastResult.points} team={teams[activeTeam]} question={lastResult.question} onContinue={continueAfterResult} />;
-      case 'scoreboard': return <ScoreboardScreen teams={teams} scores={scores} questionNum={questionNum} totalQ={totalQ} onContinue={nextTurn} />;
-      case 'end': return <EndScreen teams={teams} scores={scores} onRestart={restart} />;
+      case 'scoreboard': return <ScoreboardScreen teams={teams} scores={scores} correctCount={correctCount} wrongCount={wrongCount} questionNum={questionNum} totalQ={totalQ} onContinue={nextTurn} />;
+      case 'end': return <EndScreen teams={teams} scores={scores} correctCount={correctCount} wrongCount={wrongCount} onRestart={restart} />;
       default: return null;
     }
   })();

@@ -12,6 +12,20 @@ function QuestionScreen({ question, category, activeTeam, teams, scores, questio
   const [showCall, setShowCall] = useState(false);
   const intervalRef = useRef(null);
 
+  // خلط خيارات MCQ كل ما يجي سؤال جديد — يضمن إن الإجابة الصحيحة في موضع عشوائي
+  const { displayOptions, displayAnswerIdx } = React.useMemo(() => {
+    if (!question?.options) return { displayOptions: [], displayAnswerIdx: 0 };
+    const indices = question.options.map((_, i) => i);
+    for (let i = indices.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [indices[i], indices[j]] = [indices[j], indices[i]];
+    }
+    return {
+      displayOptions: indices.map(i => question.options[i]),
+      displayAnswerIdx: indices.indexOf(question.answer),
+    };
+  }, [question?.q]);
+
   useEffect(() => {
     intervalRef.current = setInterval(() => {
       setTimeLeft(t => {
@@ -42,7 +56,7 @@ function QuestionScreen({ question, category, activeTeam, teams, scores, questio
     onLifeline(kind);
     if (kind === 'double') setDoubled(true);
     if (kind === 'fifty' && question.type === 'mcq') {
-      const wrongs = question.options.map((_, i) => i).filter(i => i !== question.answer);
+      const wrongs = displayOptions.map((_, i) => i).filter(i => i !== displayAnswerIdx);
       const shuffled = wrongs.sort(() => Math.random() - .5);
       setHidden(shuffled.slice(0, 2));
     }
@@ -147,11 +161,11 @@ function QuestionScreen({ question, category, activeTeam, teams, scores, questio
         <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center', maxWidth: '100%', margin: '0 auto', width: '100%' }}>
           {(question.type === 'mcq' || question.type === 'image') && (
             <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: 10 }}>
-              {question.options.map((opt, i) => (
+              {displayOptions.map((opt, i) => (
                 <button key={i}
                   className="card"
                   disabled={hidden.includes(i)}
-                  onClick={() => submit(i === question.answer)}
+                  onClick={() => submit(i === displayAnswerIdx)}
                   style={{
                     padding: '12px 16px',
                     fontSize: 16,
@@ -385,43 +399,44 @@ function ResultScreen({ correct, points, team, question, onContinue }) {
 }
 
 // لوحة النقاط بين الجولات
-function ScoreboardScreen({ teams, scores, questionNum, totalQ, onContinue }) {
+function ScoreboardScreen({ teams, scores, correctCount = [0,0], wrongCount = [0,0], questionNum, totalQ, onContinue }) {
   useEffect(() => {
-    const t = setTimeout(onContinue, 3000);
+    const t = setTimeout(onContinue, 4500);
     return () => clearTimeout(t);
   }, []);
   const max = Math.max(...scores, 100);
   return (
     <div className="screen entering">
       <BgDecor />
-      <div className="col center" style={{ flex: 1, gap: 32, padding: 32 }}>
-        <div className="bubble-title" style={{ fontSize: 'clamp(32px, 5vw, 56px)' }}>
+      <div className="col center" style={{ flex: 1, gap: 24, padding: 24 }}>
+        <div className="bubble-title" style={{ fontSize: 'clamp(28px, 5vw, 48px)' }}>
           لوحة النقاط
         </div>
-        <div style={{ fontSize: 18, fontWeight: 600, color: 'var(--ink-soft)' }}>
+        <div style={{ fontSize: 16, fontWeight: 600, color: 'var(--ink-soft)' }}>
           أكملنا {questionNum} من {totalQ} سؤال
         </div>
 
         <div className="col gap-md" style={{ width: '100%', maxWidth: 600 }}>
           {teams.map((team, i) => (
             <div key={i} className="card pop" style={{
-              padding: '20px 24px',
+              padding: '16px 20px',
               background: 'var(--paper)',
               animationDelay: `${i * 0.2}s`,
             }}>
-              <div className="row" style={{ alignItems: 'center', gap: 16, marginBottom: 12 }}>
-                <div style={{ fontSize: 40 }}>{team.emoji}</div>
-                <div style={{ flex: 1, fontSize: 22, fontWeight: 700 }}>{team.name}</div>
-                <div className="bubble-title" style={{ fontSize: 36, color: team.color }}>
+              <div className="row" style={{ alignItems: 'center', gap: 14, marginBottom: 10 }}>
+                <div style={{ fontSize: 36 }}>{team.emoji}</div>
+                <div style={{ flex: 1, fontSize: 20, fontWeight: 700 }}>{team.name}</div>
+                <div className="bubble-title" style={{ fontSize: 32, color: team.color }}>
                   {scores[i]}
                 </div>
               </div>
               <div style={{
-                height: 18,
+                height: 16,
                 background: '#eee',
                 borderRadius: 999,
                 border: '2px solid var(--navy)',
                 overflow: 'hidden',
+                marginBottom: 10,
               }}>
                 <div style={{
                   width: `${(scores[i] / max) * 100}%`,
@@ -430,6 +445,18 @@ function ScoreboardScreen({ teams, scores, questionNum, totalQ, onContinue }) {
                   transition: 'width 1.2s cubic-bezier(.34,1.56,.64,1)',
                   borderLeft: '2px solid var(--navy)',
                 }}/>
+              </div>
+              <div className="row" style={{ justifyContent: 'space-around', gap: 8 }}>
+                <div className="row" style={{ alignItems: 'center', gap: 6, fontSize: 14, fontWeight: 700 }}>
+                  <span style={{ color: 'var(--accent-2)', fontSize: 18 }}>✓</span>
+                  <span style={{ color: 'var(--ink-soft)' }}>صحيحة:</span>
+                  <span style={{ color: 'var(--accent-2)', fontSize: 16 }}>{correctCount[i]}</span>
+                </div>
+                <div className="row" style={{ alignItems: 'center', gap: 6, fontSize: 14, fontWeight: 700 }}>
+                  <span style={{ color: 'var(--primary)', fontSize: 18 }}>✗</span>
+                  <span style={{ color: 'var(--ink-soft)' }}>خاطئة:</span>
+                  <span style={{ color: 'var(--primary)', fontSize: 16 }}>{wrongCount[i]}</span>
+                </div>
               </div>
             </div>
           ))}
@@ -442,7 +469,7 @@ function ScoreboardScreen({ teams, scores, questionNum, totalQ, onContinue }) {
 }
 
 // شاشة النهاية
-function EndScreen({ teams, scores, onRestart }) {
+function EndScreen({ teams, scores, correctCount = [0,0], wrongCount = [0,0], onRestart }) {
   const winner = scores[0] === scores[1] ? null : (scores[0] > scores[1] ? 0 : 1);
   useEffect(() => {
     if (winner !== null) fireConfetti();
@@ -482,7 +509,41 @@ function EndScreen({ teams, scores, onRestart }) {
           </div>
         )}
 
-        <div className="row gap-sm" style={{ marginTop: 12 }}>
+        {/* ملخص الإجابات لكلا الفريقين */}
+        <div className="card" style={{
+          padding: '14px 16px',
+          background: 'var(--paper)',
+          width: '100%', maxWidth: 480,
+        }}>
+          <div style={{
+            fontSize: 13, fontWeight: 700, color: 'var(--ink-soft)',
+            textAlign: 'center', marginBottom: 10,
+          }}>
+            ملخص الإجابات
+          </div>
+          <div className="col gap-sm">
+            {teams.map((team, i) => (
+              <div key={i} className="row" style={{
+                alignItems: 'center', gap: 8,
+                padding: '8px 10px',
+                background: 'var(--bg)',
+                borderRadius: 12,
+                border: '2px solid var(--navy)',
+              }}>
+                <span style={{ fontSize: 22 }}>{team.emoji}</span>
+                <span style={{ flex: 1, fontWeight: 700, fontSize: 14 }}>{team.name}</span>
+                <span style={{ color: 'var(--accent-2)', fontWeight: 700, fontSize: 14 }}>
+                  ✓ {correctCount[i]}
+                </span>
+                <span style={{ color: 'var(--primary)', fontWeight: 700, fontSize: 14 }}>
+                  ✗ {wrongCount[i]}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="row gap-sm" style={{ marginTop: 4 }}>
           <Btn variant="primary" onClick={onRestart} style={{ fontSize: 20 }}>🔁 العب مرة ثانية</Btn>
         </div>
       </div>

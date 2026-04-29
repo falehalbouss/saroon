@@ -527,4 +527,128 @@ function CompactTeamCard({ team, score, active }) {
   );
 }
 
-window.SaroonaScreens1 = { StartScreen, TeamsScreen, CategoryScreen, CompactTeamCard, TEAM_PRESETS };
+// شاشة اختيار الفئة والصعوبة قبل البدء
+function SetupScreen({ selectedCat, selectedDiff, onSelectCat, onSelectDiff, onStart, onBack }) {
+  const cats = window.QUESTION_BANK;
+  const difficulties = [
+    { key: 'easy',   name: 'سهل',    icon: '🟢', color: 'var(--accent-2)' },
+    { key: 'medium', name: 'متوسط',  icon: '🟡', color: 'var(--accent)' },
+    { key: 'hard',   name: 'صعب',    icon: '🔴', color: 'var(--primary)' },
+    { key: 'any',    name: 'الكل',   icon: '🎲', color: 'var(--navy)' },
+  ];
+
+  // عدّ الأسئلة المتاحة للفئة + الصعوبة المختارة
+  const availableCount = (() => {
+    if (!selectedCat) return 0;
+    const all = cats[selectedCat]?.questions || [];
+    if (selectedDiff === 'any') return all.length;
+    return all.filter(q => q.difficulty === selectedDiff).length;
+  })();
+
+  return (
+    <div className="screen entering">
+      <BgDecor />
+      <div className="col" style={{ flex: 1, padding: '56px 18px 20px', gap: 16, position: 'relative', zIndex: 1, overflowY: 'auto' }}>
+        <div className="row" style={{ justifyContent: 'flex-start' }}>
+          <Btn variant="ghost" onClick={onBack} style={{ padding: '6px 12px', fontSize: 14, boxShadow: 'none', border: '2px solid var(--navy)', background: 'var(--paper)' }}>◂ رجوع</Btn>
+        </div>
+
+        <div className="col center" style={{ gap: 4 }}>
+          <div className="bubble-title" style={{ fontSize: 30 }}>إعدادات اللعبة</div>
+          <div style={{ fontSize: 13, color: 'var(--ink-soft)', fontWeight: 600 }}>
+            اختر الفئة والصعوبة قبل ما تبدأ
+          </div>
+        </div>
+
+        {/* الفئة */}
+        <div className="col" style={{ gap: 8 }}>
+          <div style={{ fontSize: 15, fontWeight: 800, color: 'var(--navy)' }}>1. الفئة</div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+            {Object.entries(cats).map(([key, cat]) => {
+              const active = selectedCat === key;
+              return (
+                <button key={key}
+                  onClick={() => onSelectCat(key)}
+                  style={{
+                    display: 'flex', alignItems: 'center', gap: 12,
+                    padding: '10px 14px',
+                    background: active ? 'var(--primary)' : 'var(--paper)',
+                    color: active ? 'white' : 'var(--navy)',
+                    border: '3px solid var(--navy)',
+                    borderRadius: 'var(--r-md)',
+                    cursor: 'pointer', fontFamily: 'inherit', textAlign: 'right',
+                    boxShadow: active ? '0 4px 0 0 var(--navy)' : '0 2px 0 0 var(--navy)',
+                    transition: 'all .15s',
+                  }}>
+                  <div style={{
+                    width: 40, height: 40, fontSize: 24,
+                    display: 'grid', placeItems: 'center',
+                    background: active ? 'white' : 'var(--bg)',
+                    borderRadius: 12, border: '2px solid var(--navy)',
+                    flexShrink: 0,
+                  }}>{cat.icon}</div>
+                  <div style={{ flex: 1, fontWeight: 700, fontSize: 15 }}>{cat.name}</div>
+                  {active && <div style={{ fontSize: 18, fontWeight: 800 }}>✓</div>}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* الصعوبة */}
+        <div className="col" style={{ gap: 8 }}>
+          <div style={{ fontSize: 15, fontWeight: 800, color: 'var(--navy)' }}>2. مستوى الصعوبة</div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 8 }}>
+            {difficulties.map(d => {
+              const active = selectedDiff === d.key;
+              return (
+                <button key={d.key}
+                  onClick={() => onSelectDiff(d.key)}
+                  style={{
+                    padding: '12px 8px',
+                    background: active ? d.color : 'var(--paper)',
+                    color: active ? 'white' : 'var(--navy)',
+                    border: '3px solid var(--navy)',
+                    borderRadius: 'var(--r-md)',
+                    cursor: 'pointer', fontFamily: 'inherit',
+                    fontWeight: 700, fontSize: 15,
+                    boxShadow: active ? '0 4px 0 0 var(--navy)' : '0 2px 0 0 var(--navy)',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
+                  }}>
+                  <span style={{ fontSize: 16 }}>{d.icon}</span>
+                  <span>{d.name}</span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* مؤشر العدد */}
+        {selectedCat && (
+          <div className="card center" style={{
+            padding: '8px 14px',
+            background: availableCount > 0 ? 'var(--accent-2)' : '#ddd',
+            color: availableCount > 0 ? 'white' : 'var(--ink-soft)',
+            fontWeight: 700, fontSize: 13,
+          }}>
+            {availableCount} سؤال متاح بهذه الإعدادات
+          </div>
+        )}
+
+        {/* زر البدء */}
+        <div className="row center" style={{ marginTop: 4 }}>
+          <Btn
+            variant="primary"
+            disabled={!selectedCat || availableCount === 0}
+            onClick={onStart}
+            style={{ padding: '14px 36px', fontSize: 18, opacity: (!selectedCat || availableCount === 0) ? 0.5 : 1 }}
+          >
+            ابدأ اللعبة ▸
+          </Btn>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+window.SaroonaScreens1 = { StartScreen, TeamsScreen, CategoryScreen, SetupScreen, CompactTeamCard, TEAM_PRESETS };

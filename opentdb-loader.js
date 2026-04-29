@@ -61,13 +61,14 @@ function shuffle(arr) {
 
 function convertQuestion(q) {
   const question = decodeHtml(q.question);
+  const difficulty = q.difficulty || "medium";
   if (q.type === "boolean") {
-    return { type: "tf", q: question, answer: q.correct_answer === "True", source: "opentdb" };
+    return { type: "tf", q: question, answer: q.correct_answer === "True", difficulty, source: "opentdb" };
   }
   const correct = decodeHtml(q.correct_answer);
   const incorrect = q.incorrect_answers.map(decodeHtml);
   const options = shuffle([correct, ...incorrect]);
-  return { type: "mcq", q: question, options, answer: options.indexOf(correct), source: "opentdb" };
+  return { type: "mcq", q: question, options, answer: options.indexOf(correct), difficulty, source: "opentdb" };
 }
 
 function notifyReady() {
@@ -75,7 +76,7 @@ function notifyReady() {
 }
 
 // ─── 4. Cache ───────────────────────────────────────────────────────────────
-const CACHE_KEY = "saroon_opentdb_v3";
+const CACHE_KEY = "saroon_opentdb_v4";
 const CACHE_HOURS = 24;
 
 function loadCache() {
