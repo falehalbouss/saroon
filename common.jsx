@@ -60,7 +60,7 @@ function Logo({ size = 'lg' }) {
   return (
     <div className="col center" style={{ position: 'relative' }}>
       <div className="bubble-title sway" style={{ fontSize: fs, fontFamily: 'Lalezar' }}>
-        سارونة
+        Saroona
       </div>
       {size === 'lg' && (
         <div style={{
@@ -70,7 +70,7 @@ function Logo({ size = 'lg' }) {
           marginTop: 12,
           letterSpacing: 1,
         }}>
-          ◆ لعبة الأسئلة ◆
+          ◆ Quiz Game ◆
         </div>
       )}
     </div>
@@ -117,7 +117,7 @@ function TeamBadge({ team, score, active, side = 'right' }) {
             fontSize: 24,
           }}>{team.emoji}</div>
           <div className="col" style={{ alignItems: 'flex-start' }}>
-            <div style={{ fontSize: 12, opacity: .7, fontWeight: 600, color: active ? 'white' : 'var(--ink-soft)' }}>فريق</div>
+            <div style={{ fontSize: 12, opacity: .7, fontWeight: 600, color: active ? 'white' : 'var(--ink-soft)' }}>Team</div>
             <div style={{ fontWeight: 700, fontSize: 18, color: active ? 'white' : 'var(--navy)' }}>{team.name}</div>
           </div>
         </div>
@@ -134,7 +134,7 @@ function TeamBadge({ team, score, active, side = 'right' }) {
 }
 
 // شاشة تحميل البيانات
-function LoadingScreen({ message = "نجهّز لك الأسئلة..." }) {
+function LoadingScreen({ message = "Loading questions..." }) {
   return (
     <div className="screen entering">
       <BgDecor />
@@ -165,7 +165,7 @@ function LoadingScreen({ message = "نجهّز لك الأسئلة..." }) {
           textAlign: 'center', maxWidth: 280,
           fontWeight: 600,
         }}>
-          بعد لحظة تبدأ اللعبة 🎯
+          The game starts in a moment 🎯
         </div>
       </div>
       <style>{`@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }`}</style>
@@ -189,19 +189,19 @@ function ErrorScreen({ onRetry }) {
           color: 'var(--navy)',
           textAlign: 'center', maxWidth: 280,
         }}>
-          أوبس! حصلت مشكلة
+          Oops! Something went wrong
         </div>
         <div style={{
           fontSize: 15, color: 'var(--ink-soft)',
           textAlign: 'center', maxWidth: 280, lineHeight: 1.7,
           fontWeight: 600,
         }}>
-          تأكد من اتصالك بالإنترنت
+          Check your internet connection
           <br />
-          وجرّب مرة ثانية ✨
+          and try again ✨
         </div>
         <Btn variant="primary" onClick={onRetry} style={{ marginTop: 12, padding: '14px 32px', fontSize: 17 }}>
-          ↻ حاول مرة ثانية
+          ↻ Try Again
         </Btn>
       </div>
     </div>

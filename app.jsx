@@ -233,19 +233,19 @@ function App() {
       {screen}
       {TweaksPanel && (
         <TweaksPanel title="Tweaks">
-          <TweakSection title="الثيم">
+          <TweakSection title="Theme">
             <TweakRadio
-              label="لون اللعبة"
+              label="Game Color"
               value={tweaks.theme}
               onChange={v => setTweak('theme', v)}
               options={[
-                { value: 'rose', label: 'وردي وكحلي' },
-                { value: 'mint', label: 'منت ومرجاني' },
-                { value: 'grape', label: 'بنفسجي' },
+                { value: 'rose', label: 'Pink & Navy' },
+                { value: 'mint', label: 'Mint & Coral' },
+                { value: 'grape', label: 'Purple' },
               ]}
             />
             <TweakSelect
-              label="الخط"
+              label="Font"
               value={tweaks.fontFamily}
               onChange={v => setTweak('fontFamily', v)}
               options={[
@@ -255,21 +255,21 @@ function App() {
               ]}
             />
           </TweakSection>
-          <TweakSection title="إعدادات اللعبة">
+          <TweakSection title="Game Settings">
             <TweakSlider
-              label="عدد الأسئلة"
+              label="Number of Questions"
               value={tweaks.totalQuestions}
               onChange={v => setTweak('totalQuestions', v)}
               min={5} max={30} step={5}
             />
             <TweakSlider
-              label="ثواني المؤقت"
+              label="Timer (seconds)"
               value={tweaks.timerSeconds}
               onChange={v => setTweak('timerSeconds', v)}
               min={15} max={120} step={15}
             />
             <TweakSlider
-              label="نقاط الإجابة الصحيحة"
+              label="Points per Correct"
               value={tweaks.pointsPerCorrect}
               onChange={v => setTweak('pointsPerCorrect', v)}
               min={10} max={200} step={10}

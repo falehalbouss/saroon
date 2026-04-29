@@ -4,11 +4,11 @@
 
 // ─── 1. Sync init: define category metadata + empty bank ────────────────────
 window.QUESTION_BANK = {
-  general: { name: "ثقافة عامة", icon: "🧠", questions: [] },
-  history: { name: "تاريخ", icon: "📜", questions: [] },
-  geography: { name: "جغرافيا", icon: "🌍", questions: [] },
-  movies: { name: "ترفيه", icon: "🎬", questions: [] },
-  science: { name: "علوم", icon: "🔬", questions: [] },
+  general: { name: "General Knowledge", icon: "🧠", questions: [] },
+  history: { name: "History", icon: "📜", questions: [] },
+  geography: { name: "Geography", icon: "🌍", questions: [] },
+  movies: { name: "Entertainment", icon: "🎬", questions: [] },
+  science: { name: "Science", icon: "🔬", questions: [] },
 };
 
 // Status flag — checked by app.jsx for loading/error UI

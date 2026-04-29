@@ -77,15 +77,15 @@ function Modal({ title, onClose, children, accent = 'var(--primary)', exitVarian
 
 function HowToPlayModal({ onClose }) {
   const rules = [
-    { icon: '👥', title: 'فريقين', text: 'سمّوا فرقكم واختاروا الإيموجي واللون لكل فريق.' },
-    { icon: '🎯', title: 'اختاروا فئة', text: 'كل فريق بدوره يختار فئة من 10 فئات (ثقافة، رياضة، تاريخ، وغيرها).' },
-    { icon: '⏱️', title: '60 ثانية', text: 'لكم 60 ثانية للإجابة على كل سؤال. الوقت ينتهي = خسارة الدور!' },
-    { icon: '🛡️', title: 'وسائل المساعدة', text: 'حذف خيارين، اتصال بصديق، ومضاعفة النقاط ×2 — استخدموها بحكمة!' },
-    { icon: '⭐', title: 'النقاط', text: 'كل إجابة صحيحة = 50 نقطة (تتضاعف لو فعلتوا ×2).' },
-    { icon: '🏆', title: 'الفوز', text: 'بعد 20 سؤال، الفريق صاحب أعلى نقاط هو الفائز!' },
+    { icon: '👥', title: 'Two Teams', text: 'Name your teams and pick an emoji and color for each.' },
+    { icon: '🎯', title: 'Pick Category', text: 'Each team picks a category and difficulty before the game starts.' },
+    { icon: '⏱️', title: '60 Seconds', text: 'You have 60 seconds per question. Time runs out = you lose the turn!' },
+    { icon: '🛡️', title: 'Lifelines', text: 'Eliminate two, call a friend, double the points ×2 — use them wisely!' },
+    { icon: '⭐', title: 'Points', text: 'Every correct answer = 50 points (doubled if you used ×2).' },
+    { icon: '🏆', title: 'Winning', text: 'After 20 questions, the team with the highest score wins!' },
   ];
   return (
-    <Modal title="كيف ألعب؟" onClose={onClose} accent="var(--accent-2)" exitVariant="slide">
+    <Modal title="How to Play?" onClose={onClose} accent="var(--accent-2)" exitVariant="slide">
       <RulesList rules={rules} />
     </Modal>
   );
@@ -133,7 +133,7 @@ function RulesList({ rules, closing }) {
 function CategoriesModal({ onClose }) {
   const cats = window.QUESTION_BANK;
   return (
-    <Modal title="الأسئلة" onClose={onClose} accent="var(--primary)" exitVariant="pop">
+    <Modal title="Questions" onClose={onClose} accent="var(--primary)" exitVariant="pop">
       <CatsBody cats={cats} />
     </Modal>
   );
@@ -145,7 +145,7 @@ function CatsBody({ cats, closing }) {
   return (
     <React.Fragment>
       <div style={{ fontSize: 14, color: 'var(--ink-soft)', marginBottom: 16, textAlign: 'center' }}>
-        أكثر من <b style={{ color: 'var(--primary)' }}>{Object.values(cats).reduce((s, c) => s + c.questions.length, 0)} سؤال</b> موزّعة على {Object.keys(cats).length} فئات
+        Over <b style={{ color: 'var(--primary)' }}>{Object.values(cats).reduce((s, c) => s + c.questions.length, 0)} questions</b> across {Object.keys(cats).length} categories
       </div>
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 10 }}>
         {entries.map(([k, c], i) => {
@@ -172,7 +172,7 @@ function CatsBody({ cats, closing }) {
               }}>{c.icon}</div>
               <div className="col" style={{ gap: 1, minWidth: 0 }}>
                 <div style={{ fontWeight: 700, fontSize: 13, color: 'var(--navy)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{c.name}</div>
-                <div style={{ fontSize: 11, color: 'var(--ink-soft)' }}>{c.questions.length} سؤال</div>
+                <div style={{ fontSize: 11, color: 'var(--ink-soft)' }}>{c.questions.length} questions</div>
               </div>
             </div>
           );
@@ -189,7 +189,7 @@ function CatsBody({ cats, closing }) {
           ? 'popOut .2s ease-in both'
           : `popIn .3s cubic-bezier(.22,.61,.36,1) ${0.2 + total * 0.04}s both`,
       }}>
-        ✦ بأنواع متعددة: اختياري، صح/خطأ، إجابة مكتوبة، صور
+        ✦ Multiple types: multiple-choice, true/false, text answer, image
       </div>
     </React.Fragment>
   );
@@ -210,17 +210,17 @@ function StartScreen({ onStart }) {
           marginTop: 8,
         }}>
           <div style={{ fontSize: 18, fontWeight: 600, color: 'var(--navy)', textAlign: 'center' }}>
-            🎉 تحدّى صديقك في 20 سؤال 🎉
+            🎉 Challenge your friend in 20 questions 🎉
           </div>
         </div>
 
         <div className="col gap-md" style={{ marginTop: 20, alignItems: 'stretch', minWidth: 260 }}>
           <Btn variant="primary" onClick={onStart} style={{ fontSize: 22, padding: '18px 48px' }}>
-            ابدأ اللعب ▸
+            Start Playing ▸
           </Btn>
           <div className="row gap-sm">
-            <Btn variant="default" onClick={() => setModal('how')} style={{ flex: 1 }}>كيف ألعب</Btn>
-            <Btn variant="default" onClick={() => setModal('cats')} style={{ flex: 1 }}>الأسئلة</Btn>
+            <Btn variant="default" onClick={() => setModal('how')} style={{ flex: 1 }}>How to Play</Btn>
+            <Btn variant="default" onClick={() => setModal('cats')} style={{ flex: 1 }}>Questions</Btn>
           </div>
         </div>
 
@@ -231,7 +231,7 @@ function StartScreen({ onStart }) {
           color: 'var(--ink-soft)',
           opacity: .6,
         }}>
-          صُنعت بحب ♥ في الرياض
+          Made with love ♥ in Riyadh
         </div>
       </div>
       {modal === 'how' && <HowToPlayModal onClose={() => setModal(null)} />}
@@ -241,12 +241,12 @@ function StartScreen({ onStart }) {
 }
 
 const TEAM_PRESETS = [
-  { id: 't1', name: 'النمور', emoji: '🐯', color: '#FF4F8B' },
-  { id: 't2', name: 'الصقور', emoji: '🦅', color: '#7C4DFF' },
-  { id: 't3', name: 'الأسود', emoji: '🦁', color: '#FFC53D' },
-  { id: 't4', name: 'الذئاب', emoji: '🐺', color: '#00C2A8' },
-  { id: 't5', name: 'الفهود', emoji: '🐆', color: '#FF6F61' },
-  { id: 't6', name: 'النسور', emoji: '🦉', color: '#5B9DFF' },
+  { id: 't1', name: 'Tigers',  emoji: '🐯', color: '#FF4F8B' },
+  { id: 't2', name: 'Falcons', emoji: '🦅', color: '#7C4DFF' },
+  { id: 't3', name: 'Lions',   emoji: '🦁', color: '#FFC53D' },
+  { id: 't4', name: 'Wolves',  emoji: '🐺', color: '#00C2A8' },
+  { id: 't5', name: 'Cheetahs',emoji: '🐆', color: '#FF6F61' },
+  { id: 't6', name: 'Owls',    emoji: '🦉', color: '#5B9DFF' },
 ];
 
 // شاشة اختيار الفرق
@@ -271,8 +271,8 @@ function TeamsScreen({ teams, setTeams, onNext, onBack }) {
               minWidth: 84,
               background: 'var(--paper)',
             }}
-          >◂ رجوع</Btn>
-          <div className="bubble-title" style={{ fontSize: 36, whiteSpace: 'nowrap', textAlign: 'center', flex: 1, lineHeight: 1, paddingBottom: 4 }}>اختر الفرق</div>
+          >◂ Back</Btn>
+          <div className="bubble-title" style={{ fontSize: 36, whiteSpace: 'nowrap', textAlign: 'center', flex: 1, lineHeight: 1, paddingBottom: 4 }}>Choose Teams</div>
           <div style={{ minWidth: 84 }}/>
         </div>
 
@@ -294,7 +294,7 @@ function TeamsScreen({ teams, setTeams, onNext, onBack }) {
             }}>
               <div className="col gap-md" style={{ alignItems: 'center' }}>
                 <div style={{ fontSize: 14, fontWeight: 700, color: 'white', opacity: .9 }}>
-                  فريق {i === 0 ? 'الأول' : 'الثاني'}
+                  Team {i === 0 ? '1' : '2'}
                 </div>
                 <button
                   onClick={() => {
@@ -355,7 +355,7 @@ function TeamsScreen({ teams, setTeams, onNext, onBack }) {
 
         <div className="center" style={{ paddingBottom: 12 }}>
           <Btn variant="primary" onClick={onNext} style={{ fontSize: 22, padding: '18px 56px' }}>
-            يلا نبدأ ▸
+            Let's Go ▸
           </Btn>
         </div>
       </div>
@@ -374,10 +374,10 @@ function CategoryScreen({ activeTeam, teams, scores, questionNum, totalQ, onPick
 
         {/* شريط علوي: رجوع + عداد الأسئلة */}
         <div className="row" style={{ alignItems: 'center', justifyContent: 'space-between' }}>
-          <Btn variant="ghost" onClick={onBack} style={{ padding: '6px 12px', fontSize: 14, boxShadow: 'none', border: '2px solid var(--navy)', background: 'var(--paper)' }}>◂ رجوع</Btn>
+          <Btn variant="ghost" onClick={onBack} style={{ padding: '6px 12px', fontSize: 14, boxShadow: 'none', border: '2px solid var(--navy)', background: 'var(--paper)' }}>◂ Back</Btn>
           <div className="card" style={{ padding: '6px 14px', background: 'var(--navy)', borderColor: 'var(--navy)', boxShadow: 'none' }}>
             <div style={{ fontWeight: 700, fontSize: 13, color: 'white', letterSpacing: '.5px' }}>
-              السؤال <span style={{ color: 'var(--accent)', fontSize: 16 }}>{questionNum}</span> / {totalQ}
+              Question <span style={{ color: 'var(--accent)', fontSize: 16 }}>{questionNum}</span> / {totalQ}
             </div>
           </div>
         </div>
@@ -399,13 +399,13 @@ function CategoryScreen({ activeTeam, teams, scores, questionNum, totalQ, onPick
           gap: 8,
         }}>
           <span style={{ fontSize: 18 }}>{activeT.emoji}</span>
-          <span style={{ fontWeight: 700, fontSize: 14, color: 'white' }}>دور فريق {activeT.name}</span>
+          <span style={{ fontWeight: 700, fontSize: 14, color: 'white' }}>{activeT.name}'s Turn</span>
         </div>
 
         {/* العنوان + مؤشر API live */}
         <div className="col center" style={{ marginTop: 4, gap: 6 }}>
           <div className="bubble-title wobble" style={{ fontSize: 32, whiteSpace: 'nowrap' }}>
-            اختر فئة
+            Choose Category
           </div>
           <div className="row" style={{
             alignItems: 'center', gap: 6,
@@ -422,7 +422,7 @@ function CategoryScreen({ activeTeam, teams, scores, questionNum, totalQ, onPick
               animation: 'pulse 1.5s ease-in-out infinite',
               boxShadow: '0 0 0 2px rgba(255,255,255,0.4)',
             }}/>
-            <span>أسئلة حيّة من الإنترنت</span>
+            <span>Live questions from the API</span>
           </div>
         </div>
         <style>{`
@@ -454,7 +454,7 @@ function CategoryScreen({ activeTeam, teams, scores, questionNum, totalQ, onPick
                 fontFamily: 'inherit',
                 gap: 14,
                 width: '100%',
-                textAlign: 'right',
+                textAlign: 'left',
               }}
             >
               <div style={{
@@ -471,10 +471,10 @@ function CategoryScreen({ activeTeam, teams, scores, questionNum, totalQ, onPick
               <div style={{ flex: 1, minWidth: 0 }}>
                 <div style={{ fontWeight: 700, fontSize: 17, color: 'var(--navy)', lineHeight: 1.2 }}>{cat.name}</div>
                 <div style={{ fontSize: 11, color: 'var(--ink-soft)', marginTop: 2, fontWeight: 600 }}>
-                  {cat.questions.length} سؤال
+                  {cat.questions.length} questions
                 </div>
               </div>
-              <div style={{ fontSize: 22, color: 'var(--primary)', fontWeight: 700, flexShrink: 0 }}>◂</div>
+              <div style={{ fontSize: 22, color: 'var(--primary)', fontWeight: 700, flexShrink: 0 }}>▸</div>
             </button>
           ))}
         </div>
@@ -531,10 +531,10 @@ function CompactTeamCard({ team, score, active }) {
 function SetupScreen({ selectedCat, selectedDiff, onSelectCat, onSelectDiff, onStart, onBack }) {
   const cats = window.QUESTION_BANK;
   const difficulties = [
-    { key: 'easy',   name: 'سهل',    icon: '🟢', color: 'var(--accent-2)' },
-    { key: 'medium', name: 'متوسط',  icon: '🟡', color: 'var(--accent)' },
-    { key: 'hard',   name: 'صعب',    icon: '🔴', color: 'var(--primary)' },
-    { key: 'any',    name: 'الكل',   icon: '🎲', color: 'var(--navy)' },
+    { key: 'easy',   name: 'Easy',   icon: '🟢', color: 'var(--accent-2)' },
+    { key: 'medium', name: 'Medium', icon: '🟡', color: 'var(--accent)' },
+    { key: 'hard',   name: 'Hard',   icon: '🔴', color: 'var(--primary)' },
+    { key: 'any',    name: 'Any',    icon: '🎲', color: 'var(--navy)' },
   ];
 
   // عدّ الأسئلة المتاحة للفئة + الصعوبة المختارة
@@ -550,19 +550,19 @@ function SetupScreen({ selectedCat, selectedDiff, onSelectCat, onSelectDiff, onS
       <BgDecor />
       <div className="col" style={{ flex: 1, padding: '56px 18px 20px', gap: 16, position: 'relative', zIndex: 1, overflowY: 'auto' }}>
         <div className="row" style={{ justifyContent: 'flex-start' }}>
-          <Btn variant="ghost" onClick={onBack} style={{ padding: '6px 12px', fontSize: 14, boxShadow: 'none', border: '2px solid var(--navy)', background: 'var(--paper)' }}>◂ رجوع</Btn>
+          <Btn variant="ghost" onClick={onBack} style={{ padding: '6px 12px', fontSize: 14, boxShadow: 'none', border: '2px solid var(--navy)', background: 'var(--paper)' }}>◂ Back</Btn>
         </div>
 
         <div className="col center" style={{ gap: 4 }}>
-          <div className="bubble-title" style={{ fontSize: 30 }}>إعدادات اللعبة</div>
+          <div className="bubble-title" style={{ fontSize: 30 }}>Game Settings</div>
           <div style={{ fontSize: 13, color: 'var(--ink-soft)', fontWeight: 600 }}>
-            اختر الفئة والصعوبة قبل ما تبدأ
+            Choose category and difficulty before you start
           </div>
         </div>
 
         {/* الفئة */}
         <div className="col" style={{ gap: 8 }}>
-          <div style={{ fontSize: 15, fontWeight: 800, color: 'var(--navy)' }}>1. الفئة</div>
+          <div style={{ fontSize: 15, fontWeight: 800, color: 'var(--navy)' }}>1. Category</div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
             {Object.entries(cats).map(([key, cat]) => {
               const active = selectedCat === key;
@@ -576,7 +576,7 @@ function SetupScreen({ selectedCat, selectedDiff, onSelectCat, onSelectDiff, onS
                     color: active ? 'white' : 'var(--navy)',
                     border: '3px solid var(--navy)',
                     borderRadius: 'var(--r-md)',
-                    cursor: 'pointer', fontFamily: 'inherit', textAlign: 'right',
+                    cursor: 'pointer', fontFamily: 'inherit', textAlign: 'left',
                     boxShadow: active ? '0 4px 0 0 var(--navy)' : '0 2px 0 0 var(--navy)',
                     transition: 'all .15s',
                   }}>
@@ -597,7 +597,7 @@ function SetupScreen({ selectedCat, selectedDiff, onSelectCat, onSelectDiff, onS
 
         {/* الصعوبة */}
         <div className="col" style={{ gap: 8 }}>
-          <div style={{ fontSize: 15, fontWeight: 800, color: 'var(--navy)' }}>2. مستوى الصعوبة</div>
+          <div style={{ fontSize: 15, fontWeight: 800, color: 'var(--navy)' }}>2. Difficulty</div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 8 }}>
             {difficulties.map(d => {
               const active = selectedDiff === d.key;
@@ -631,7 +631,7 @@ function SetupScreen({ selectedCat, selectedDiff, onSelectCat, onSelectDiff, onS
             color: availableCount > 0 ? 'white' : 'var(--ink-soft)',
             fontWeight: 700, fontSize: 13,
           }}>
-            {availableCount} سؤال متاح بهذه الإعدادات
+            {availableCount} questions available with these settings
           </div>
         )}
 
@@ -643,7 +643,7 @@ function SetupScreen({ selectedCat, selectedDiff, onSelectCat, onSelectDiff, onS
             onClick={onStart}
             style={{ padding: '14px 36px', fontSize: 18, opacity: (!selectedCat || availableCount === 0) ? 0.5 : 1 }}
           >
-            ابدأ اللعبة ▸
+            Start Game ▸
           </Btn>
         </div>
       </div>

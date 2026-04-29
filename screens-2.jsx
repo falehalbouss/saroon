@@ -78,7 +78,7 @@ function QuestionScreen({ question, category, activeTeam, teams, scores, questio
         <div className="row" style={{ alignItems: 'center', justifyContent: 'space-between', gap: 10 }}>
           <div className="card" style={{ padding: '6px 14px', background: 'var(--navy)', borderColor: 'var(--navy)', boxShadow: 'none' }}>
             <div style={{ fontWeight: 700, fontSize: 13, color: 'white', letterSpacing: '.5px' }}>
-              السؤال <span style={{ color: 'var(--accent)', fontSize: 16 }}>{questionNum}</span> / {totalQ}
+              Question <span style={{ color: 'var(--accent)', fontSize: 16 }}>{questionNum}</span> / {totalQ}
             </div>
           </div>
 
@@ -191,7 +191,7 @@ function QuestionScreen({ question, category, activeTeam, teams, scores, questio
                     border: '2px solid var(--navy)',
                     fontSize: 14,
                     flexShrink: 0,
-                  }}>{['أ','ب','ج','د'][i]}</span>
+                  }}>{['A','B','C','D'][i]}</span>
                   <span dir="auto" style={{ flex: 1, textAlign: 'start' }}>{opt}</span>
                 </button>
               ))}
@@ -203,12 +203,12 @@ function QuestionScreen({ question, category, activeTeam, teams, scores, questio
               <button className="card"
                 onClick={() => submit(question.answer === true)}
                 style={{ padding: '24px 32px', background: 'var(--accent-2)', color: 'white', fontFamily: 'inherit', fontWeight: 700, fontSize: 22, cursor: 'pointer', flex: 1 }}>
-                ✓ صح
+                ✓ True
               </button>
               <button className="card"
                 onClick={() => submit(question.answer === false)}
                 style={{ padding: '24px 32px', background: 'var(--primary)', color: 'white', fontFamily: 'inherit', fontWeight: 700, fontSize: 22, cursor: 'pointer', flex: 1 }}>
-                ✗ خطأ
+                ✗ False
               </button>
             </div>
           )}
@@ -220,7 +220,7 @@ function QuestionScreen({ question, category, activeTeam, teams, scores, questio
                 value={textAnswer}
                 onChange={e => setTextAnswer(e.target.value)}
                 onKeyDown={e => e.key === 'Enter' && checkText()}
-                placeholder="اكتب إجابتك هنا..."
+                placeholder="Type your answer here..."
                 style={{
                   width: '100%',
                   maxWidth: 500,
@@ -238,7 +238,7 @@ function QuestionScreen({ question, category, activeTeam, teams, scores, questio
                 autoFocus
               />
               <Btn variant="primary" onClick={checkText} disabled={!textAnswer.trim()}>
-                تأكيد ▸
+                Submit ▸
               </Btn>
             </div>
           )}
@@ -255,7 +255,7 @@ function QuestionScreen({ question, category, activeTeam, teams, scores, questio
               cursor: lifelinesLeft.fifty ? 'pointer' : 'not-allowed',
               fontSize: 14,
             }}>
-            ✂️ حذف خيارين ({lifelinesLeft.fifty})
+            ✂️ Eliminate Two ({lifelinesLeft.fifty})
           </button>
           <button onClick={() => useLifeline('call')} disabled={!lifelinesLeft.call}
             className="card"
@@ -266,7 +266,7 @@ function QuestionScreen({ question, category, activeTeam, teams, scores, questio
               cursor: lifelinesLeft.call ? 'pointer' : 'not-allowed',
               fontSize: 14,
             }}>
-            📞 اتصل بصديق ({lifelinesLeft.call})
+            📞 Call a Friend ({lifelinesLeft.call})
           </button>
           <button onClick={() => useLifeline('double')} disabled={!lifelinesLeft.double || doubled}
             className="card"
@@ -278,7 +278,7 @@ function QuestionScreen({ question, category, activeTeam, teams, scores, questio
               cursor: lifelinesLeft.double ? 'pointer' : 'not-allowed',
               fontSize: 14,
             }}>
-            ✦ ×2 نقاط ({lifelinesLeft.double})
+            ✦ ×2 Points ({lifelinesLeft.double})
           </button>
         </div>
 
@@ -295,13 +295,13 @@ function QuestionScreen({ question, category, activeTeam, teams, scores, questio
             maxWidth: 360,
             zIndex: 50,
           }}>
-            <div style={{ fontWeight: 700, marginBottom: 4 }}>📞 صديقك يقول:</div>
+            <div style={{ fontWeight: 700, marginBottom: 4 }}>📞 Your friend says:</div>
             <div style={{ fontSize: 14 }}>
-              "أعتقد إن الإجابة هي <b>{
+              "I think the answer is <b>{
                 question.type === 'mcq' || question.type === 'image' ? question.options[question.answer] :
-                question.type === 'tf' ? (question.answer ? 'صح' : 'خطأ') :
+                question.type === 'tf' ? (question.answer ? 'True' : 'False') :
                 Array.isArray(question.answer) ? question.answer[0] : question.answer
-              }</b>... بس مو متأكد 100%! 😅"
+              }</b>... but I'm not 100% sure! 😅"
             </div>
           </div>
         )}
@@ -325,7 +325,7 @@ function ResultScreen({ correct, points, team, question, onContinue }) {
       return question.options?.[question.answer];
     }
     if (question.type === 'tf') {
-      return question.answer ? 'صح ✓' : 'خطأ ✗';
+      return question.answer ? 'True ✓' : 'False ✗';
     }
     if (question.type === 'text') {
       return Array.isArray(question.answer) ? question.answer[0] : question.answer;
@@ -352,7 +352,7 @@ function ResultScreen({ correct, points, team, question, onContinue }) {
           padding: '0 8px',
           maxWidth: '100%',
         }}>
-          {correct ? 'إجابة صحيحة!' : 'إجابة خاطئة'}
+          {correct ? 'Correct!' : 'Wrong'}
         </div>
         {correct && (
           <div className="card pop" style={{
@@ -364,7 +364,7 @@ function ResultScreen({ correct, points, team, question, onContinue }) {
             textAlign: 'center',
             maxWidth: '100%',
           }}>
-            +{points} نقطة لـ {team.name} {team.emoji}
+            +{points} pts for {team.name} {team.emoji}
           </div>
         )}
         {!correct && correctAnswerText && (
@@ -380,7 +380,7 @@ function ResultScreen({ correct, points, team, question, onContinue }) {
             gap: 4,
           }}>
             <div style={{ fontSize: 13, color: 'var(--ink-soft)', fontWeight: 600 }}>
-              الإجابة الصحيحة
+              Correct Answer
             </div>
             <div dir="auto" style={{
               fontSize: 22,
@@ -410,10 +410,10 @@ function ScoreboardScreen({ teams, scores, correctCount = [0,0], wrongCount = [0
       <BgDecor />
       <div className="col center" style={{ flex: 1, gap: 24, padding: 24 }}>
         <div className="bubble-title" style={{ fontSize: 'clamp(28px, 5vw, 48px)' }}>
-          لوحة النقاط
+          Scoreboard
         </div>
         <div style={{ fontSize: 16, fontWeight: 600, color: 'var(--ink-soft)' }}>
-          أكملنا {questionNum} من {totalQ} سؤال
+          {questionNum} of {totalQ} questions completed
         </div>
 
         <div className="col gap-md" style={{ width: '100%', maxWidth: 600 }}>
@@ -449,12 +449,12 @@ function ScoreboardScreen({ teams, scores, correctCount = [0,0], wrongCount = [0
               <div className="row" style={{ justifyContent: 'space-around', gap: 8 }}>
                 <div className="row" style={{ alignItems: 'center', gap: 6, fontSize: 14, fontWeight: 700 }}>
                   <span style={{ color: 'var(--accent-2)', fontSize: 18 }}>✓</span>
-                  <span style={{ color: 'var(--ink-soft)' }}>صحيحة:</span>
+                  <span style={{ color: 'var(--ink-soft)' }}>Correct:</span>
                   <span style={{ color: 'var(--accent-2)', fontSize: 16 }}>{correctCount[i]}</span>
                 </div>
                 <div className="row" style={{ alignItems: 'center', gap: 6, fontSize: 14, fontWeight: 700 }}>
                   <span style={{ color: 'var(--primary)', fontSize: 18 }}>✗</span>
-                  <span style={{ color: 'var(--ink-soft)' }}>خاطئة:</span>
+                  <span style={{ color: 'var(--ink-soft)' }}>Wrong:</span>
                   <span style={{ color: 'var(--primary)', fontSize: 16 }}>{wrongCount[i]}</span>
                 </div>
               </div>
@@ -462,7 +462,7 @@ function ScoreboardScreen({ teams, scores, correctCount = [0,0], wrongCount = [0
           ))}
         </div>
 
-        <Btn variant="primary" onClick={onContinue}>تابع ▸</Btn>
+        <Btn variant="primary" onClick={onContinue}>Continue ▸</Btn>
       </div>
     </div>
   );
@@ -479,7 +479,7 @@ function EndScreen({ teams, scores, correctCount = [0,0], wrongCount = [0,0], on
       <BgDecor />
       <div className="col center" style={{ flex: 1, gap: 24, padding: 32 }}>
         <div className="bubble-title" style={{ fontSize: 'clamp(48px, 8vw, 88px)' }}>
-          {winner === null ? 'تعـادل!' : 'الفـائـز!'}
+          {winner === null ? 'It\'s a Tie!' : 'Winner!'}
         </div>
 
         {winner !== null ? (
@@ -494,7 +494,7 @@ function EndScreen({ teams, scores, correctCount = [0,0], wrongCount = [0,0], on
               {teams[winner].name}
             </div>
             <div className="bubble-title" style={{ fontSize: 64, color: 'var(--accent)', marginTop: 8 }}>
-              {scores[winner]} نقطة
+              {scores[winner]} pts
             </div>
           </div>
         ) : (
@@ -519,7 +519,7 @@ function EndScreen({ teams, scores, correctCount = [0,0], wrongCount = [0,0], on
             fontSize: 13, fontWeight: 700, color: 'var(--ink-soft)',
             textAlign: 'center', marginBottom: 10,
           }}>
-            ملخص الإجابات
+            Answer Summary
           </div>
           <div className="col gap-sm">
             {teams.map((team, i) => (
@@ -544,7 +544,7 @@ function EndScreen({ teams, scores, correctCount = [0,0], wrongCount = [0,0], on
         </div>
 
         <div className="row gap-sm" style={{ marginTop: 4 }}>
-          <Btn variant="primary" onClick={onRestart} style={{ fontSize: 20 }}>🔁 العب مرة ثانية</Btn>
+          <Btn variant="primary" onClick={onRestart} style={{ fontSize: 20 }}>🔁 Play Again</Btn>
         </div>
       </div>
     </div>

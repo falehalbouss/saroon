@@ -9,9 +9,9 @@ function LoginScreen({ onSubmit }) {
   const [shaking, setShaking] = _useState0(false);
 
   const validate = () => {
-    if (!name.trim()) return 'فضلاً اكتب اسمك';
+    if (!name.trim()) return 'Please enter your name';
     const p = phone.replace(/\D/g, '');
-    if (p.length !== 8) return 'رقم الجوال غير صحيح (8 أرقام)';
+    if (p.length !== 8) return 'Invalid phone number (8 digits)';
     return '';
   };
 
@@ -39,48 +39,47 @@ function LoginScreen({ onSubmit }) {
           maxWidth: 420,
         }}>
           <div className="bubble-title" style={{ fontSize: 36, textAlign: 'center', marginBottom: 6 }}>
-            تسجيل الدخول
+            Sign In
           </div>
           <div style={{ textAlign: 'center', color: 'var(--ink-soft)', fontSize: 14, marginBottom: 22 }}>
-            ابدأ مع سارونة في خطوتين 🎉
+            Start with Saroona in two steps 🎉
           </div>
 
           <div className="col gap-md">
             <div className="col" style={{ gap: 6 }}>
-              <label style={{ fontSize: 14, fontWeight: 700, color: 'var(--navy)', paddingRight: 6 }}>
-                الاسم
+              <label style={{ fontSize: 14, fontWeight: 700, color: 'var(--navy)', paddingLeft: 6 }}>
+                Name
               </label>
               <div style={{ position: 'relative' }}>
-                <span style={{ position: 'absolute', right: 18, top: '50%', transform: 'translateY(-50%)', fontSize: 20 }}>👤</span>
+                <span style={{ position: 'absolute', left: 18, top: '50%', transform: 'translateY(-50%)', fontSize: 20 }}>👤</span>
                 <input
                   value={name}
                   onChange={e => { setName(e.target.value); setError(''); }}
                   onKeyDown={e => e.key === 'Enter' && submit()}
-                  placeholder="مثلاً: محمد"
+                  placeholder="e.g. Mohammed"
                   style={{
                     width: '100%',
                     fontFamily: 'inherit',
                     background: 'var(--bg)',
                     border: '3px solid var(--navy)',
                     borderRadius: 'var(--r-pill)',
-                    padding: '14px 50px 14px 20px',
+                    padding: '14px 20px 14px 50px',
                     fontSize: 18,
                     fontWeight: 600,
                     color: 'var(--navy)',
                     outline: 'none',
-                    direction: 'rtl',
                   }}
                 />
               </div>
             </div>
 
             <div className="col" style={{ gap: 6 }}>
-              <label style={{ fontSize: 14, fontWeight: 700, color: 'var(--navy)', paddingRight: 6 }}>
-                رقم الجوال
+              <label style={{ fontSize: 14, fontWeight: 700, color: 'var(--navy)', paddingLeft: 6 }}>
+                Phone Number
               </label>
               <div style={{ position: 'relative' }}>
-                <span style={{ position: 'absolute', right: 18, top: '50%', transform: 'translateY(-50%)', fontSize: 20 }}>📱</span>
-                <span style={{ position: 'absolute', left: 20, top: '50%', transform: 'translateY(-50%)', fontSize: 14, fontWeight: 700, color: 'var(--ink-soft)' }}>
+                <span style={{ position: 'absolute', left: 18, top: '50%', transform: 'translateY(-50%)', fontSize: 20 }}>📱</span>
+                <span style={{ position: 'absolute', left: 50, top: '50%', transform: 'translateY(-50%)', fontSize: 14, fontWeight: 700, color: 'var(--ink-soft)' }}>
                   +965
                 </span>
                 <input
@@ -95,13 +94,11 @@ function LoginScreen({ onSubmit }) {
                     background: 'var(--bg)',
                     border: '3px solid var(--navy)',
                     borderRadius: 'var(--r-pill)',
-                    padding: '14px 50px 14px 70px',
+                    padding: '14px 20px 14px 100px',
                     fontSize: 18,
                     fontWeight: 600,
                     color: 'var(--navy)',
                     outline: 'none',
-                    direction: 'ltr',
-                    textAlign: 'right',
                     letterSpacing: 1,
                   }}
                 />
@@ -120,11 +117,11 @@ function LoginScreen({ onSubmit }) {
             )}
 
             <_Btn variant="primary" onClick={submit} style={{ fontSize: 20, padding: '16px 32px', marginTop: 6 }}>
-              تأكيد ▸
+              Continue ▸
             </_Btn>
 
             <div style={{ fontSize: 12, color: 'var(--ink-soft)', textAlign: 'center', marginTop: 4 }}>
-              راح يوصلك رمز تحقق على جوالك
+              A verification code will be sent to your phone
             </div>
           </div>
         </div>
@@ -218,10 +215,10 @@ function OtpScreen({ phone, onVerify, onBack }) {
           maxWidth: 420,
         }}>
           <div className="bubble-title" style={{ fontSize: 36, textAlign: 'center', marginBottom: 6 }}>
-            رمز التحقق
+            Verification Code
           </div>
           <div style={{ textAlign: 'center', color: 'var(--ink-soft)', fontSize: 14, marginBottom: 4 }}>
-            أدخل الرمز المرسل إلى
+            Enter the code sent to
           </div>
           <div style={{ textAlign: 'center', fontSize: 16, fontWeight: 700, color: 'var(--primary)', marginBottom: 22, direction: 'ltr' }}>
             {masked}
@@ -258,7 +255,7 @@ function OtpScreen({ phone, onVerify, onBack }) {
 
           {verifying && (
             <div style={{ textAlign: 'center', fontSize: 14, color: 'var(--accent-2)', fontWeight: 700, marginBottom: 12 }}>
-              جاري التحقق... ⏳
+              Verifying... ⏳
             </div>
           )}
           {error && (
@@ -269,12 +266,12 @@ function OtpScreen({ phone, onVerify, onBack }) {
               border: '2px solid var(--navy)',
               marginBottom: 12,
             }}>
-              ⚠️ الرمز غير صحيح، حاول مرة ثانية
+              ⚠️ Invalid code, try again
             </div>
           )}
 
           <div style={{ textAlign: 'center', fontSize: 13, color: 'var(--ink-soft)' }}>
-            ما وصلك الرمز؟{' '}
+            Didn't get the code?{' '}
             <button
               onClick={resend}
               disabled={seconds > 0}
@@ -287,15 +284,15 @@ function OtpScreen({ phone, onVerify, onBack }) {
                 padding: 0,
               }}
             >
-              {seconds > 0 ? `إعادة الإرسال خلال ${seconds}ث` : 'إعادة الإرسال'}
+              {seconds > 0 ? `Resend in ${seconds}s` : 'Resend'}
             </button>
           </div>
         </div>
 
-        <_Btn variant="ghost" onClick={onBack}>◂ تغيير الرقم</_Btn>
+        <_Btn variant="ghost" onClick={onBack}>◂ Change Number</_Btn>
 
         <div style={{ fontSize: 11, color: 'var(--ink-soft)', opacity: .7, textAlign: 'center', maxWidth: 320 }}>
-          نسخة تجريبية — أدخل أي 4 أرقام (ما عدا 0000) للمتابعة
+          Demo version — enter any 4 digits (except 0000) to continue
         </div>
       </div>
     </div>
