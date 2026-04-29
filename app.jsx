@@ -3,7 +3,17 @@ const { useState, useEffect, useMemo } = React;
 const { StartScreen, TeamsScreen, CategoryScreen, TEAM_PRESETS } = window.SaroonaScreens1;
 const { QuestionScreen, ResultScreen, ScoreboardScreen, EndScreen } = window.SaroonaScreens2;
 const { LoginScreen, OtpScreen } = window.SaroonaAuth;
+const { LoadingScreen, ErrorScreen } = window.SaroonaCommon;
 const { TweaksPanel, useTweaks, TweakSection, TweakSlider, TweakRadio, TweakSelect } = window.TweaksPanel || {};
+
+const READY_STATES = new Set(["fetched", "loaded_from_cache"]);
+function getApiState() {
+  const s = window.__opentdb?.status;
+  return {
+    ready: READY_STATES.has(s),
+    error: s === "error" ? (window.__opentdb?.error || "Unknown error") : null,
+  };
+}
 
 function App() {
   const tweakHook = useTweaks ? useTweaks(window.__TWEAK_DEFAULTS) : { tweaks: window.__TWEAK_DEFAULTS, setTweak: () => {} };
@@ -16,6 +26,29 @@ function App() {
   }, [tweaks.theme, tweaks.fontFamily]);
 
   const [stage, setStage] = useState('login'); // login, otp, start, teams, category, question, result, scoreboard, end
+  const initialApi = getApiState();
+  const [apiReady, setApiReady] = useState(initialApi.ready);
+  const [apiError, setApiError] = useState(initialApi.error);
+
+  useEffect(() => {
+    const handler = (e) => {
+      const status = e.detail?.status;
+      if (status === 'error') {
+        setApiReady(false);
+        setApiError(e.detail?.error || 'Unknown error');
+      } else if (READY_STATES.has(status)) {
+        setApiReady(true);
+        setApiError(null);
+      } else if (status === 'fetching') {
+        setApiReady(false);
+        setApiError(null);
+      }
+    };
+    window.addEventListener('opentdb:ready', handler);
+    return () => window.removeEventListener('opentdb:ready', handler);
+  }, []);
+
+  const retryApi = () => window.__opentdb?.retry?.();
   const [user, setUser] = useState({ name: '', phone: '' });
   const [teams, setTeams] = useState([
     { ...TEAM_PRESETS[0] },
@@ -125,7 +158,10 @@ function App() {
       case 'otp': return <OtpScreen phone={user.phone} onVerify={() => transition('start')} onBack={() => transition('login')} />;
       case 'start': return <StartScreen onStart={startGame} />;
       case 'teams': return <TeamsScreen teams={teams} setTeams={setTeams} onNext={startPlay} onBack={() => transition('start')} />;
-      case 'category': return <CategoryScreen activeTeam={activeTeam} teams={teams} scores={scores} questionNum={questionNum} totalQ={totalQ} onPick={pickCategory} onBack={() => transition('teams')} />;
+      case 'category':
+        if (apiError) return <ErrorScreen onRetry={retryApi} />;
+        if (!apiReady) return <LoadingScreen />;
+        return <CategoryScreen activeTeam={activeTeam} teams={teams} scores={scores} questionNum={questionNum} totalQ={totalQ} onPick={pickCategory} onBack={() => transition('teams')} />;
       case 'question': return <QuestionScreen
         question={currentQ}
         category={currentCat}

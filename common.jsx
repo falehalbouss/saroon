@@ -133,4 +133,79 @@ function TeamBadge({ team, score, active, side = 'right' }) {
   );
 }
 
-window.SaroonaCommon = { BgDecor, Btn, Logo, fireConfetti, TeamBadge };
+// شاشة تحميل البيانات
+function LoadingScreen({ message = "نجهّز لك الأسئلة..." }) {
+  return (
+    <div className="screen entering">
+      <BgDecor />
+      <div className="col center" style={{
+        flex: 1, padding: '60px 24px', gap: 24,
+        position: 'relative', zIndex: 1,
+        justifyContent: 'center', alignItems: 'center',
+      }}>
+        <Logo size="md" />
+        <div style={{
+          width: 64, height: 64,
+          border: '6px solid var(--paper)',
+          borderTopColor: 'var(--primary)',
+          borderRadius: '50%',
+          animation: 'spin 1s linear infinite',
+          marginTop: 12,
+        }}/>
+        <div style={{
+          fontSize: 20, fontWeight: 800,
+          color: 'var(--navy)',
+          textAlign: 'center', maxWidth: 280,
+          marginTop: 8,
+        }}>
+          {message}
+        </div>
+        <div style={{
+          fontSize: 14, color: 'var(--ink-soft)',
+          textAlign: 'center', maxWidth: 280,
+          fontWeight: 600,
+        }}>
+          بعد لحظة تبدأ اللعبة 🎯
+        </div>
+      </div>
+      <style>{`@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }`}</style>
+    </div>
+  );
+}
+
+// شاشة خطأ تحميل
+function ErrorScreen({ onRetry }) {
+  return (
+    <div className="screen entering">
+      <BgDecor />
+      <div className="col center" style={{
+        flex: 1, padding: '60px 24px', gap: 18,
+        position: 'relative', zIndex: 1,
+        justifyContent: 'center', alignItems: 'center',
+      }}>
+        <div style={{ fontSize: 76, marginBottom: 4 }}>😔</div>
+        <div style={{
+          fontSize: 24, fontWeight: 800,
+          color: 'var(--navy)',
+          textAlign: 'center', maxWidth: 280,
+        }}>
+          أوبس! حصلت مشكلة
+        </div>
+        <div style={{
+          fontSize: 15, color: 'var(--ink-soft)',
+          textAlign: 'center', maxWidth: 280, lineHeight: 1.7,
+          fontWeight: 600,
+        }}>
+          تأكد من اتصالك بالإنترنت
+          <br />
+          وجرّب مرة ثانية ✨
+        </div>
+        <Btn variant="primary" onClick={onRetry} style={{ marginTop: 12, padding: '14px 32px', fontSize: 17 }}>
+          ↻ حاول مرة ثانية
+        </Btn>
+      </div>
+    </div>
+  );
+}
+
+window.SaroonaCommon = { BgDecor, Btn, Logo, fireConfetti, TeamBadge, LoadingScreen, ErrorScreen };

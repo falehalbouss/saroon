@@ -132,7 +132,7 @@ function QuestionScreen({ question, category, activeTeam, teams, scores, questio
               filter: 'drop-shadow(3px 3px 0 var(--navy))',
             }}>{question.emoji}</div>
           )}
-          <div style={{
+          <div dir="auto" style={{
             fontSize: 'clamp(16px, 4vw, 20px)',
             fontWeight: 700,
             textAlign: 'center',
@@ -162,24 +162,23 @@ function QuestionScreen({ question, category, activeTeam, teams, scores, questio
                     cursor: hidden.includes(i) ? 'not-allowed' : 'pointer',
                     opacity: hidden.includes(i) ? .35 : 1,
                     transition: 'all .2s',
-                    textAlign: 'right',
-                    direction: 'rtl',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 12,
                   }}
                   onMouseEnter={e => { if (!hidden.includes(i)) { e.currentTarget.style.background = 'var(--primary)'; e.currentTarget.style.color = 'white'; } }}
                   onMouseLeave={e => { if (!hidden.includes(i)) { e.currentTarget.style.background = 'var(--paper)'; e.currentTarget.style.color = 'var(--navy)'; } }}
                 >
                   <span style={{
-                    display: 'inline-block',
+                    display: 'inline-grid', placeItems: 'center',
                     width: 28, height: 28,
                     borderRadius: '50%',
                     background: 'var(--accent)',
                     border: '2px solid var(--navy)',
-                    textAlign: 'center',
-                    lineHeight: '24px',
-                    fontSize: 16,
-                    marginLeft: 12,
+                    fontSize: 14,
+                    flexShrink: 0,
                   }}>{['أ','ب','ج','د'][i]}</span>
-                  {opt}
+                  <span dir="auto" style={{ flex: 1, textAlign: 'start' }}>{opt}</span>
                 </button>
               ))}
             </div>
@@ -203,6 +202,7 @@ function QuestionScreen({ question, category, activeTeam, teams, scores, questio
           {question.type === 'text' && (
             <div className="col gap-md" style={{ alignItems: 'center' }}>
               <input
+                dir="auto"
                 value={textAnswer}
                 onChange={e => setTextAnswer(e.target.value)}
                 onKeyDown={e => e.key === 'Enter' && checkText()}
@@ -220,7 +220,6 @@ function QuestionScreen({ question, category, activeTeam, teams, scores, questio
                   color: 'var(--navy)',
                   textAlign: 'center',
                   outline: 'none',
-                  direction: 'rtl',
                 }}
                 autoFocus
               />
@@ -369,7 +368,7 @@ function ResultScreen({ correct, points, team, question, onContinue }) {
             <div style={{ fontSize: 13, color: 'var(--ink-soft)', fontWeight: 600 }}>
               الإجابة الصحيحة
             </div>
-            <div style={{
+            <div dir="auto" style={{
               fontSize: 22,
               fontWeight: 700,
               color: 'var(--accent-2)',

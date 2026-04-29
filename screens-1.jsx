@@ -402,17 +402,40 @@ function CategoryScreen({ activeTeam, teams, scores, questionNum, totalQ, onPick
           <span style={{ fontWeight: 700, fontSize: 14, color: 'white' }}>دور فريق {activeT.name}</span>
         </div>
 
-        {/* العنوان */}
-        <div className="col center" style={{ marginTop: 4 }}>
+        {/* العنوان + مؤشر API live */}
+        <div className="col center" style={{ marginTop: 4, gap: 6 }}>
           <div className="bubble-title wobble" style={{ fontSize: 32, whiteSpace: 'nowrap' }}>
             اختر فئة
           </div>
+          <div className="row" style={{
+            alignItems: 'center', gap: 6,
+            background: 'var(--accent-2)',
+            color: 'white',
+            padding: '3px 10px',
+            borderRadius: 999,
+            fontSize: 11, fontWeight: 700,
+            border: '2px solid var(--navy)',
+          }}>
+            <span style={{
+              width: 8, height: 8, borderRadius: '50%',
+              background: '#fff',
+              animation: 'pulse 1.5s ease-in-out infinite',
+              boxShadow: '0 0 0 2px rgba(255,255,255,0.4)',
+            }}/>
+            <span>أسئلة حيّة من الإنترنت</span>
+          </div>
         </div>
+        <style>{`
+          @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(0.85); }
+          }
+        `}</style>
 
-        {/* شبكة الفئات */}
+        {/* قائمة الفئات — صفوف أفقية متناسقة */}
         <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(2, 1fr)',
+          display: 'flex',
+          flexDirection: 'column',
           gap: 10,
           width: '100%',
         }}>
@@ -421,16 +444,37 @@ function CategoryScreen({ activeTeam, teams, scores, questionNum, totalQ, onPick
               className="card pop cat-card"
               onClick={() => onPick(key)}
               style={{
-                padding: '12px 6px',
+                display: 'flex',
+                alignItems: 'center',
+                padding: '12px 16px',
                 background: 'var(--paper)',
                 cursor: 'pointer',
                 animationDelay: `${i * 0.04}s`,
                 border: '3px solid var(--navy)',
                 fontFamily: 'inherit',
+                gap: 14,
+                width: '100%',
+                textAlign: 'right',
               }}
             >
-              <div style={{ fontSize: 32, marginBottom: 2, lineHeight: 1.2 }}>{cat.icon}</div>
-              <div style={{ fontWeight: 700, fontSize: 13, color: 'var(--navy)' }}>{cat.name}</div>
+              <div style={{
+                fontSize: 32, lineHeight: 1,
+                width: 52, height: 52,
+                display: 'grid', placeItems: 'center',
+                background: activeT.color,
+                borderRadius: 14,
+                border: '2px solid var(--navy)',
+                flexShrink: 0,
+              }}>
+                {cat.icon}
+              </div>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={{ fontWeight: 700, fontSize: 17, color: 'var(--navy)', lineHeight: 1.2 }}>{cat.name}</div>
+                <div style={{ fontSize: 11, color: 'var(--ink-soft)', marginTop: 2, fontWeight: 600 }}>
+                  {cat.questions.length} سؤال
+                </div>
+              </div>
+              <div style={{ fontSize: 22, color: 'var(--primary)', fontWeight: 700, flexShrink: 0 }}>◂</div>
             </button>
           ))}
         </div>
