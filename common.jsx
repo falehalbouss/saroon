@@ -56,19 +56,30 @@ function Btn({ children, variant = 'default', onClick, style, className = '', di
 
 // شعار سارونة
 function Logo({ size = 'lg' }) {
-  const fs = size === 'lg' ? 'clamp(64px, 11vw, 140px)' : size === 'md' ? '48px' : '32px';
+  const fs = size === 'lg' ? 'clamp(52px, 13vw, 88px)' : size === 'md' ? '44px' : '30px';
   return (
-    <div className="col center" style={{ position: 'relative' }}>
-      <div className="bubble-title sway" style={{ fontSize: fs, fontFamily: 'Lalezar' }}>
+    <div className="col center" style={{
+      position: 'relative',
+      maxWidth: '100%',
+      padding: '0 16px',
+      overflow: 'visible',
+    }}>
+      <div className="bubble-title sway" style={{
+        fontSize: fs,
+        fontFamily: 'Lalezar',
+        whiteSpace: 'nowrap',
+        textAlign: 'center',
+      }}>
         Saroona
       </div>
       {size === 'lg' && (
         <div style={{
-          fontSize: 22,
+          fontSize: 'clamp(14px, 4vw, 22px)',
           color: 'var(--ink-soft)',
           fontWeight: 600,
           marginTop: 12,
           letterSpacing: 1,
+          whiteSpace: 'nowrap',
         }}>
           ◆ Quiz Game ◆
         </div>

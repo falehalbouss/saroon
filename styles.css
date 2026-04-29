@@ -50,7 +50,6 @@ body {
   font-family: 'IBM Plex Sans Arabic', system-ui, sans-serif;
   background: #1B1F4A;
   color: var(--ink);
-  direction: rtl;
   overflow: hidden;
   -webkit-font-smoothing: antialiased;
 }
